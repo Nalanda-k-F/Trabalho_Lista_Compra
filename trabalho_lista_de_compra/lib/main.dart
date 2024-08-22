@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:path/path.dart';
 import 'app/pages/home.dart';
+import 'app/pages/cadastrar.dart';
+import 'app/pages/UserListPage.dart';
 
 void main() {
   runApp(TrabalhoFinal());
@@ -22,8 +25,10 @@ class TrabalhoFinal extends StatelessWidget {
       routes: {
         '/trabalhoFinal': (context) => TrabalhoFinal(),
         '/home': (context) => HomePage(),
+        '/cadastrar':(context) => Cadastrar(),
+        '/userListPage':(context) => UserListPage(), 
       },
-      initialRoute: '/home', // Primeira tela a ser carregada
+      initialRoute: '/cadastrar', // Primeira tela a ser carregada
     );
   }
 }

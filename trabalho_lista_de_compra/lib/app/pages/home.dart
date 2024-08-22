@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import '../widgets/custom_button.dart';
+import '../widgets/background_image.dart';
 
 class HomePage extends StatelessWidget {
   @override
@@ -6,19 +8,12 @@ class HomePage extends StatelessWidget {
     return Scaffold(
       body: Stack(
         children: [
-          // Imagem de fundo
-          Image.asset(
-            'img/imagem2.jpg', // Substitua pelo caminho correto da sua imagem de fundo
-            fit: BoxFit.cover,
-            height: double.infinity,
-            width: double.infinity,
-          ),
-          // Conteúdo sobre a imagem de fundo
+          BackgroundImage(imagePath: 'img/imagem2.jpg'), // Usando o widget de imagem de fundo
           Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-               SizedBox(height: 30),
+              SizedBox(height: 30),
               Center(
                 child: Text(
                   'Bem Vindo!',
@@ -33,37 +28,27 @@ class HomePage extends StatelessWidget {
                 child: Center(
                   child: Image.asset(
                     'img/logo.png', // Substitua pelo caminho correto da sua imagem central
-                    width: 250, // Largura da imagem
-                    height: 250, // Altura da imagem
+                    width: 250,
+                    height: 250,
                   ),
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.all(16.0), // Espaçamento em torno dos botões
+                padding: const EdgeInsets.all(16.0),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    ElevatedButton(
+                    CustomButton(
+                      text: 'Cadastrar',
                       onPressed: () {
-                        Navigator.pushNamed(context, '/cadastrar'); // Navega para a página de cadastro
+                        Navigator.pushNamed(context, '/cadastrar');
                       },
-                      style: ElevatedButton.styleFrom(
-                        primary: Color(0xFF0A7744), // Cor de fundo verde
-                        onPrimary: Colors.white, // Cor do texto branco
-                        padding: EdgeInsets.symmetric(horizontal: 25, vertical: 15), // Ajuste o tamanho do botão
-                      ),
-                      child: Text('Cadastrar'),
                     ),
-                    ElevatedButton(
+                    CustomButton(
+                      text: 'Login',
                       onPressed: () {
-                        Navigator.pushNamed(context, '/login'); // Navega para a página de login
+                        Navigator.pushNamed(context, '/login');
                       },
-                      style: ElevatedButton.styleFrom(
-                        primary: Color(0xFF0A7744), // Cor de fundo verde
-                        onPrimary: Colors.white, // Cor do texto branco
-                        padding: EdgeInsets.symmetric(horizontal: 25, vertical: 15), // Ajuste o tamanho do botão
-                      ),
-                      child: Text('Login'),
                     ),
                   ],
                 ),
