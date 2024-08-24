@@ -32,7 +32,9 @@ dependencies:
     sdk: flutter
   sqflite: any #para o Banco de Dados
   path: any # Versão mais recente disponivel 
+  intl: any
 
+  
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
@@ -62,6 +64,7 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
   - img/imagem2.jpg
+  - img/imagem20.jpg
   - img/logo.png
   #   - images/a_dot_ham.jpeg
 

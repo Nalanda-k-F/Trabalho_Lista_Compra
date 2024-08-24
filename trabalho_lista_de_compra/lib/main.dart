@@ -3,6 +3,8 @@ import 'package:path/path.dart';
 import 'app/pages/home.dart';
 import 'app/pages/cadastrar.dart';
 import 'app/pages/UserListPage.dart';
+import 'app/pages/login.dart';
+import 'app/pages/telaCadastro.dart';
 
 void main() {
   runApp(TrabalhoFinal());
@@ -26,9 +28,11 @@ class TrabalhoFinal extends StatelessWidget {
         '/trabalhoFinal': (context) => TrabalhoFinal(),
         '/home': (context) => HomePage(),
         '/cadastrar':(context) => Cadastrar(),
+        '/login': (context) => Login(),
         '/userListPage':(context) => UserListPage(), 
+        '/telaCadastro':(context) => TelaCadastro(), 
       },
-      initialRoute: '/cadastrar', // Primeira tela a ser carregada
+      initialRoute: '/telaCadastro', // Primeira tela a ser carregada
     );
   }
 }
