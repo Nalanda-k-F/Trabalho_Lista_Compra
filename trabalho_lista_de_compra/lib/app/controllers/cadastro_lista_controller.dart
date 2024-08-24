@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:sqflite/sqflite.dart';
-import '../../database/bd.dart'; // Importa a função de inicializaç
+import '../../database/bd.dart';
+
+
 
 class CadastroListaController {
   final TextEditingController itemController = TextEditingController();
@@ -11,7 +13,11 @@ class CadastroListaController {
   String? unidadeSelecionada;
   final List<String> unidades = ['Kg', 'Litro', 'Unidade'];
 
-  void adicionarItem(VoidCallback updateUI, BuildContext context) {
+  Future<Database> _getDatabase() async {
+    return await initializeDatabase();
+  }
+
+  void adicionarItem(VoidCallback updateUI, BuildContext context) async {
     if (itemController.text.isEmpty ||
         quantidadeController.text.isEmpty ||
         unidadeSelecionada == null) {
@@ -21,7 +27,19 @@ class CadastroListaController {
       return;
     }
 
+    // Inserir item na tabela Itens
+    final db = await _getDatabase();
+    final idItem = await db.insert(
+      'Itens',
+      {
+        'nome_item': itemController.text,
+        'quantidade_item': double.parse(quantidadeController.text),
+        'id_unidade_medida_fk': unidades.indexOf(unidadeSelecionada!) + 1,
+      },
+    );
+
     itens.add({
+      'id_item': idItem.toString(),
       'nome': itemController.text,
       'quantidade': quantidadeController.text,
       'unidade': unidadeSelecionada!,
@@ -33,7 +51,13 @@ class CadastroListaController {
     updateUI();
   }
 
-  void removerItem(int index, VoidCallback updateUI, BuildContext context) {
+  void removerItem(int index, VoidCallback updateUI, BuildContext context) async {
+    final db = await _getDatabase();
+    final idItem = int.parse(itens[index]['id_item']!);
+
+    // Deletar o item da tabela Itens
+    await db.delete('Itens', where: 'id_item = ?', whereArgs: [idItem]);
+
     itens.removeAt(index);
     updateUI();
     ScaffoldMessenger.of(context).showSnackBar(
@@ -63,17 +87,38 @@ class CadastroListaController {
   }
 
   void salvarLista(BuildContext context) async {
-    if (nomeLista.isEmpty || itens.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Preencha o nome da lista e adicione pelo menos um item')),
-      );
-      return;
-    }
+    final db = await _getDatabase();
 
-    // Aqui você pode adicionar a lógica para salvar a lista e os itens no banco de dados
+    // Inserir a lista na tabela Listas
+    final idLista = await db.insert('Listas', {
+      'nome_lista': nomeLista,
+      'data_criacao_lista': dataInicio?.toIso8601String(),
+      // Adicione outras colunas conforme necessário
+    });
+
+    // Inserir os itens na tabela ListaItens
+    for (var item in itens) {
+      await db.insert('ListaItens', {
+        'quantidade_lista_item': int.parse(item['quantidade']!),
+        'id_lista_fk': idLista,
+        'id_item_fk': int.parse(item['id_item']!),
+      });
+    }
 
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text('Lista salva com sucesso')),
     );
+
+    // Limpar os dados após salvar
+    nomeLista = '';
+    dataInicio = null;
+    itens.clear();
+  }
+
+  void cancelarLista(VoidCallback updateUI) {
+    nomeLista = '';
+    dataInicio = null;
+    itens.clear();
+    updateUI();
   }
 }

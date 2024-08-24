@@ -88,14 +88,14 @@ class _CadastrarState extends State<Cadastrar> {
                   children: [
                     TextFormField(
                       style: TextStyle(
-                        color: const Color.fromARGB(255, 1, 1, 1),
+                        color:  Color.fromARGB(255, 1, 1, 1),
                         fontWeight:
                             FontWeight.bold, // Adiciona o texto em negrito
                       ),
                       controller: _nomeController,
                       decoration: InputDecoration(
                         hintStyle: TextStyle(
-                            color: const Color.fromARGB(255, 0, 0, 0),
+                            color:  Color.fromARGB(255, 0, 0, 0),
                             fontFamily: "WorkSansLight",
                             fontSize: 15.0),
                         filled: true,

@@ -1,7 +1,8 @@
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
-Future<Database> initDatabase() async {
+// Função para inicializar o banco de dados
+Future<Database> initializeDatabase() async {
   final dbPath = await getDatabasesPath();
   final path = join(dbPath, 'lista_de_compras_mobile.db');
 
@@ -66,114 +67,154 @@ Future<Database> initDatabase() async {
   );
 }
 
-// Função para inserir dados na tabela Usuarios
+// Funções para manipulação de dados na tabela Usuarios
 Future<void> inserirUsuario(Database db, Map<String, dynamic> usuario) async {
-  await db.insert(
-    'Usuarios',
-    usuario,
-    conflictAlgorithm: ConflictAlgorithm.replace,
-  );
+  try {
+    await db.insert(
+      'Usuarios',
+      usuario,
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
+  } catch (e) {
+    print('Erro ao inserir usuário: $e');
+  }
 }
 
-// Função para atualizar dados na tabela Usuarios
 Future<void> atualizarUsuario(Database db, int id, Map<String, dynamic> novosDados) async {
-  await db.update(
-    'Usuarios',
-    novosDados,
-    where: 'id_usu = ?',
-    whereArgs: [id],
-  );
+  try {
+    await db.update(
+      'Usuarios',
+      novosDados,
+      where: 'id_usu = ?',
+      whereArgs: [id],
+    );
+  } catch (e) {
+    print('Erro ao atualizar usuário: $e');
+  }
 }
 
-// Função para deletar dados na tabela Usuarios
 Future<void> deletarUsuario(Database db, int id) async {
-  await db.delete(
-    'Usuarios',
-    where: 'id_usu = ?',
-    whereArgs: [id],
-  );
+  try {
+    await db.delete(
+      'Usuarios',
+      where: 'id_usu = ?',
+      whereArgs: [id],
+    );
+  } catch (e) {
+    print('Erro ao deletar usuário: $e');
+  }
 }
 
-// Função para inserir dados na tabela Listas
+// Funções para manipulação de dados na tabela Listas
 Future<void> inserirLista(Database db, Map<String, dynamic> lista) async {
-  await db.insert(
-    'Listas',
-    lista,
-    conflictAlgorithm: ConflictAlgorithm.replace,
-  );
+  try {
+    await db.insert(
+      'Listas',
+      lista,
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
+  } catch (e) {
+    print('Erro ao inserir lista: $e');
+  }
 }
 
-// Função para atualizar dados na tabela Listas
 Future<void> atualizarLista(Database db, int id, Map<String, dynamic> novosDados) async {
-  await db.update(
-    'Listas',
-    novosDados,
-    where: 'id_lista = ?',
-    whereArgs: [id],
-  );
+  try {
+    await db.update(
+      'Listas',
+      novosDados,
+      where: 'id_lista = ?',
+      whereArgs: [id],
+    );
+  } catch (e) {
+    print('Erro ao atualizar lista: $e');
+  }
 }
 
-// Função para deletar dados na tabela Listas
 Future<void> deletarLista(Database db, int id) async {
-  await db.delete(
-    'Listas',
-    where: 'id_lista = ?',
-    whereArgs: [id],
-  );
+  try {
+    await db.delete(
+      'Listas',
+      where: 'id_lista = ?',
+      whereArgs: [id],
+    );
+  } catch (e) {
+    print('Erro ao deletar lista: $e');
+  }
 }
 
-// Função para inserir dados na tabela Itens
+// Funções para manipulação de dados na tabela Itens
 Future<void> inserirItem(Database db, Map<String, dynamic> item) async {
-  await db.insert(
-    'Itens',
-    item,
-    conflictAlgorithm: ConflictAlgorithm.replace,
-  );
+  try {
+    await db.insert(
+      'Itens',
+      item,
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
+  } catch (e) {
+    print('Erro ao inserir item: $e');
+  }
 }
 
-// Função para atualizar dados na tabela Itens
 Future<void> atualizarItem(Database db, int id, Map<String, dynamic> novosDados) async {
-  await db.update(
-    'Itens',
-    novosDados,
-    where: 'id_item = ?',
-    whereArgs: [id],
-  );
+  try {
+    await db.update(
+      'Itens',
+      novosDados,
+      where: 'id_item = ?',
+      whereArgs: [id],
+    );
+  } catch (e) {
+    print('Erro ao atualizar item: $e');
+  }
 }
 
-// Função para deletar dados na tabela Itens
 Future<void> deletarItem(Database db, int id) async {
-  await db.delete(
-    'Itens',
-    where: 'id_item = ?',
-    whereArgs: [id],
-  );
+  try {
+    await db.delete(
+      'Itens',
+      where: 'id_item = ?',
+      whereArgs: [id],
+    );
+  } catch (e) {
+    print('Erro ao deletar item: $e');
+  }
 }
 
-// Função para inserir dados na tabela ListaItens
+// Funções para manipulação de dados na tabela ListaItens
 Future<void> inserirListaItem(Database db, Map<String, dynamic> listaItem) async {
-  await db.insert(
-    'ListaItens',
-    listaItem,
-    conflictAlgorithm: ConflictAlgorithm.replace,
-  );
+  try {
+    await db.insert(
+      'ListaItens',
+      listaItem,
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
+  } catch (e) {
+    print('Erro ao inserir lista item: $e');
+  }
 }
 
-// Função para atualizar dados na tabela ListaItens
 Future<void> atualizarListaItem(Database db, int id, Map<String, dynamic> novosDados) async {
-  await db.update(
-    'ListaItens',
-    novosDados,
-    where: 'id_lista_item = ?',
-    whereArgs: [id],
-  );
+  try {
+    await db.update(
+      'ListaItens',
+      novosDados,
+      where: 'id_lista_item = ?',
+      whereArgs: [id],
+    );
+  } catch (e) {
+    print('Erro ao atualizar lista item: $e');
+  }
 }
 
-// Função para deletar dados na tabela ListaItens
 Future<void> deletarListaItem(Database db, int id) async {
-  await db.delete(
-    'ListaItens',
-    where: 'id_lista_item = ?',
-    whereArgs: [id],
-  );
+  try {
+    await db.delete(
+      'ListaItens',
+      where: 'id_lista_item = ?',
+      whereArgs: [id],
+    );
+  } catch (e) {
+    print('Erro ao deletar lista item: $e');
+  }
 }

@@ -56,7 +56,7 @@ class UsuarioController {
       return;
     }
 
-    final db = await initDatabase();
+    final db = await initializeDatabase();
 
     // Verificar se o email já está cadastrado
     final resultado = await db.query(

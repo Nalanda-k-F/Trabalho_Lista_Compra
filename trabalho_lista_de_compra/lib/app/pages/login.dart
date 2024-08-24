@@ -37,7 +37,7 @@ class _LoginState extends State<Login> {
 
       if (sucesso) {
         // Redirecionar para a próxima tela após login bem-sucedido
-        Navigator.pushReplacementNamed(context, '/userListPage'); // Ajuste para a rota desejada
+        Navigator.pushReplacementNamed(context, '/telaPrincipal'); // Ajuste para a rota desejada
       }
     }
   }
