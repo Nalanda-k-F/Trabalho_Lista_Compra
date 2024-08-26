@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:sqflite/sqflite.dart';
 import '../../database/bd.dart'; // Importa a função de inicialização do banco
 
 class UserListPage extends StatefulWidget {
