@@ -54,8 +54,8 @@ class _EditarState extends State<Editar> {
         title: Text('Voltar'),
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
-          onPressed: () {
-            Navigator.pop(context);
+           onPressed: () {
+             Navigator.pushNamed(context, '/telaPrincipal');
           },
         ),
       ),

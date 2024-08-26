@@ -33,17 +33,11 @@ class _TelaListasState extends State<TelaListas> {
       backgroundColor: Color(0xFFE3A776),
       appBar: AppBar(
         backgroundColor: Color(0xFFE3A776),
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
         actions: [
           IconButton(
             icon: Icon(Icons.logout),
             onPressed: () {
-              // Lógica para sair
+              _controller.showLogoutDialog(context);
             },
           ),
         ],
@@ -173,11 +167,13 @@ class _TelaListasState extends State<TelaListas> {
                               onPressed: () async {
                                 bool sucesso = await _controller
                                     .deletarLista(lista['id_lista']);
+                                     Navigator.pushNamed(context, '/telaPrincipal');
                                 if (sucesso) {
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     SnackBar(
                                       content:
                                           Text('Lista deletada com sucesso.'),
+                                          
                                     ),
                                   );
                                 } else {

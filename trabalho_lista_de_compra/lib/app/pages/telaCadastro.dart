@@ -26,18 +26,10 @@ class _TelaCadastroState extends State<TelaCadastro> {
         title: Text('Voltar'),
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
-          onPressed: () {
-            Navigator.pop(context); // Volta para a página anterior
+           onPressed: () {
+            Navigator.pushNamed(context, '/telaPrincipal');
           },
         ),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.logout),
-            onPressed: () {
-              // Lógica para sair
-            },
-          ),
-        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -145,13 +137,15 @@ class _TelaCadastroState extends State<TelaCadastro> {
                         ),
                         contentPadding: EdgeInsets.symmetric(horizontal: 12),
                       ),
-                      keyboardType: TextInputType.numberWithOptions(decimal: true),
+                      keyboardType:
+                          TextInputType.numberWithOptions(decimal: true),
                     ),
                   ),
                   SizedBox(height: 16),
                   CustomButton(
                     text: 'Adicionar Item',
-                    onPressed: () => _controller.adicionarItem(() => setState(() {}), context),
+                    onPressed: () => _controller.adicionarItem(
+                        () => setState(() {}), context),
                   ),
                   SizedBox(height: 16),
                   ListView.builder(
@@ -163,7 +157,8 @@ class _TelaCadastroState extends State<TelaCadastro> {
                         margin: EdgeInsets.only(bottom: 8),
                         decoration: BoxDecoration(
                           color: Colors.white, // Fundo branco
-                          borderRadius: BorderRadius.circular(15.0), // Borda arredondada
+                          borderRadius:
+                              BorderRadius.circular(15.0), // Borda arredondada
                           boxShadow: [
                             BoxShadow(
                               color: Colors.black26,
@@ -173,13 +168,16 @@ class _TelaCadastroState extends State<TelaCadastro> {
                           ],
                         ),
                         child: ListTile(
-                          contentPadding: EdgeInsets.all(12), // Espaçamento interno
+                          contentPadding:
+                              EdgeInsets.all(12), // Espaçamento interno
                           title: Text(
                             '${_controller.itens[index]['nome']} (${_controller.itens[index]['quantidade']} ${_controller.itens[index]['unidade']})',
                           ),
                           trailing: IconButton(
-                            icon: Icon(Icons.delete, color: Colors.red), // Ícone vermelho
-                            onPressed: () => _controller.removerItem(index, () => setState(() {}), context),
+                            icon: Icon(Icons.delete,
+                                color: Colors.red), // Ícone vermelho
+                            onPressed: () => _controller.removerItem(
+                                index, () => setState(() {}), context),
                           ),
                         ),
                       );
@@ -219,7 +217,8 @@ class _TelaCadastroState extends State<TelaCadastro> {
                       borderRadius: BorderRadius.circular(20),
                     ),
                     child: ElevatedButton(
-                      onPressed: () => _controller.selecionarData(context, () => setState(() {})),
+                      onPressed: () => _controller.selecionarData(
+                          context, () => setState(() {})),
                       style: ElevatedButton.styleFrom(
                         primary: Color.fromARGB(255, 155, 130, 84),
                         onPrimary: Colors.white,

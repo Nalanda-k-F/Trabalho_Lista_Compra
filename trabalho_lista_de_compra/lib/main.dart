@@ -66,7 +66,7 @@ class TrabalhoFinal extends StatelessWidget {
           );
         },
       },
-      initialRoute: '/telaPrincipal',
+      initialRoute: '/home',
     );
   }
 }

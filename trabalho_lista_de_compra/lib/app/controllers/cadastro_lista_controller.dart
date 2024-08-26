@@ -2,11 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:sqflite/sqflite.dart';
 import '../../database/bd.dart';
 
-
 class CadastroListaController {
   final TextEditingController itemController = TextEditingController();
   final TextEditingController quantidadeController = TextEditingController();
-  final List<Map<String, dynamic>> itens = []; // Use dynamic para tipos variados
+  final List<Map<String, dynamic>> itens = [];
   DateTime? dataInicio;
   String nomeLista = '';
   String? unidadeSelecionada;
@@ -20,23 +19,20 @@ class CadastroListaController {
     if (itemController.text.isEmpty ||
         quantidadeController.text.isEmpty ||
         unidadeSelecionada == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Preencha todos os campos')),
-      );
+      _showSnackBar(context, 'Preencha todos os campos', Colors.red);
       return;
     }
 
     try {
       final db = await _getDatabase();
       final idItem = await db.insert(
-  'Itens',
-  {
-    'nome_item': itemController.text,
-    'quantidade_item': double.parse(quantidadeController.text),
-    'id_unidade_medida_fk': unidades.indexOf(unidadeSelecionada!) + 1,
-  },
-);
-
+        'Itens',
+        {
+          'nome_item': itemController.text,
+          'quantidade_item': double.parse(quantidadeController.text),
+          'id_unidade_medida_fk': unidades.indexOf(unidadeSelecionada!) + 1,
+        },
+      );
 
       itens.add({
         'id_item': idItem,
@@ -49,10 +45,9 @@ class CadastroListaController {
       unidadeSelecionada = null;
 
       updateUI();
+      _showSnackBar(context, 'Item adicionado com sucesso', Colors.green);
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Erro ao adicionar item: $e')),
-      );
+      _showSnackBar(context, 'Erro ao adicionar item: $e', Colors.red);
     }
   }
 
@@ -65,21 +60,9 @@ class CadastroListaController {
 
       itens.removeAt(index);
       updateUI();
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Row(
-            children: [
-              Icon(Icons.warning, color: Colors.orange),
-              SizedBox(width: 10),
-              Expanded(child: Text('O item foi removido da lista')),
-            ],
-          ),
-        ),
-      );
+      _showSnackBar(context, 'O item foi removido da lista', Colors.orange);
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Erro ao remover item: $e')),
-      );
+      _showSnackBar(context, 'Erro ao remover item: $e', Colors.red);
     }
   }
 
@@ -108,23 +91,19 @@ class CadastroListaController {
 
       for (var item in itens) {
         await db.insert('ListaItens', {
-          'quantidade_lista_item': double.parse(item['quantidade'].toString()), // Use double se necessário
+          'quantidade_lista_item': double.parse(item['quantidade'].toString()),
           'id_lista_fk': idLista,
           'id_item_fk': int.parse(item['id_item'].toString()),
         });
       }
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Lista salva com sucesso')),
-      );
+      _showSnackBar(context, 'Lista salva com sucesso', Colors.green);
 
       nomeLista = '';
       dataInicio = null;
       itens.clear();
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Erro ao salvar lista: $e')),
-      );
+      _showSnackBar(context, 'Erro ao salvar lista: $e', Colors.red);
     }
   }
 
@@ -134,4 +113,14 @@ class CadastroListaController {
     itens.clear();
     updateUI();
   }
+
+  void _showSnackBar(BuildContext context, String message, Color color) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        backgroundColor: color,
+        duration: Duration(seconds: 2),
+      ),
+    );
+  }  //
 }

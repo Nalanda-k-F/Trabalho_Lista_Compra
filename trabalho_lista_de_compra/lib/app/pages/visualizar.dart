@@ -45,8 +45,8 @@ class _VisualizarState extends State<Visualizar> {
         title: Text('Visualizar Lista'),
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
-          onPressed: () {
-            Navigator.pop(context);
+           onPressed: () {
+             Navigator.pushNamed(context, '/telaPrincipal');
           },
         ),
       ),

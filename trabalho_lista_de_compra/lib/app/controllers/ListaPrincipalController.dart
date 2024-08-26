@@ -18,7 +18,6 @@ class ListaPrincipalController extends ChangeNotifier {
       _db = await ListaDatabase();
       await _fetchListas();
     } catch (e) {
-      // Lidar com erros de inicialização do banco de dados
       print("Erro ao inicializar o banco de dados: $e");
     }
   }
@@ -60,11 +59,9 @@ class ListaPrincipalController extends ChangeNotifier {
     });
   }
 
-//
   Future<void> editarLista(int id, String nome) async {
     try {
-      final listas =
-          await _db?.query('Listas', where: 'id_lista = ?', whereArgs: [id]);
+      final listas = await _db?.query('Listas', where: 'id_lista = ?', whereArgs: [id]);
       if (listas != null && listas.isNotEmpty) {
         final lista = listas.first;
         final status = lista['status_lista'];
@@ -73,15 +70,13 @@ class ListaPrincipalController extends ChangeNotifier {
           Navigator.pushNamed(
             context,
             '/editar',
-            arguments: {'id': id, 'nome': nome}, // Passando argumentos como Map
+            arguments: {'id': id, 'nome': nome},
           ).then((_) {
             _fetchListas();
           });
         } else {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-                content:
-                    Text('Esta lista está finalizada e não pode ser editada.')),
+            SnackBar(content: Text('Esta lista está finalizada e não pode ser editada.')),
           );
         }
       }
@@ -93,29 +88,15 @@ class ListaPrincipalController extends ChangeNotifier {
   Future<bool> deletarLista(int id) async {
     try {
       if (_db != null) {
-        // Primeiro, remover os registros da tabela ListaItens que referenciam a lista
-        await _db!.delete(
-          'ListaItens',
-          where: 'id_lista_fk = ?',
-          whereArgs: [id],
-        );
-
-        // Agora, remover a lista da tabela Listas
-        await _db!.delete(
-          'Listas',
-          where: 'id_lista = ?',
-          whereArgs: [id],
-        );
-
-        // Atualizar a lista de listas
+        await _db!.delete('ListaItens', where: 'id_lista_fk = ?', whereArgs: [id]);
+        await _db!.delete('Listas', where: 'id_lista = ?', whereArgs: [id]);
         await _fetchListas();
-        return true; // Deleção bem-sucedida
+        return true;
       }
-      return false; // Banco de dados não disponível
+      return false;
     } catch (e) {
-      // Lidar com erros de deleção no banco de dados
       print("Erro ao deletar lista: $e");
-      return false; // Erro durante a deleção
+      return false;
     }
   }
 
@@ -134,7 +115,36 @@ class ListaPrincipalController extends ChangeNotifier {
 
   @override
   void dispose() {
+    searchController.removeListener(_filterListas);
     searchController.dispose();
     super.dispose();
   }
+ 
+  void showLogoutDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Sair'),
+          content: Text('Você tem certeza que deseja sair?'),
+          actions: <Widget>[
+            TextButton(
+              child: Text('Cancelar'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: Text('Sair'),
+              onPressed: () {
+                // Lógica de logout
+                Navigator.of(context).pushReplacementNamed('/home'); // Exemplo de navegação
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
 }
