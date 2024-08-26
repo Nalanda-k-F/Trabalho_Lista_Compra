@@ -1,8 +1,21 @@
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
+// Função para deletar o banco de dados
+// Future<void> deleteAppDatabase() async {
+//   try {
+//     final dbPath = await getDatabasesPath();
+//     final path = join(dbPath, 'lista_de_compras_mobile.db');
+
+//     await deleteDatabase(path);
+
+//     print('Banco de dados deletado com sucesso.');
+//   } catch (e) {
+//     print('Erro ao deletar o banco de dados: $e');
+//   }
+// }
 
 // Função para inicializar o banco de dados
-Future<Database> initializeDatabase() async {
+Future<Database> ListaDatabase() async {
   final dbPath = await getDatabasesPath();
   final path = join(dbPath, 'lista_de_compras_mobile.db');
 
@@ -24,8 +37,7 @@ Future<Database> initializeDatabase() async {
             nome_lista TEXT,
             data_criacao_lista TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             id_usu_fk INTEGER,
-            concluida_lista INTEGER DEFAULT 0,
-            valor_total_lista REAL,
+            preco_total REAL DEFAULT 0,
             status_lista TEXT DEFAULT 'Em Andamento', 
             FOREIGN KEY (id_usu_fk) REFERENCES Usuarios(id_usu)
         );
@@ -50,7 +62,6 @@ Future<Database> initializeDatabase() async {
             id_lista_item INTEGER PRIMARY KEY AUTOINCREMENT,
             quantidade_lista_item INTEGER,
             comprado_lista_item INTEGER DEFAULT 0,
-            preco_unitario_lista_item REAL,
             id_lista_fk INTEGER,
             id_item_fk INTEGER,
             FOREIGN KEY (id_lista_fk) REFERENCES Listas(id_lista),
@@ -63,10 +74,10 @@ Future<Database> initializeDatabase() async {
       await db.insert('UnidadesMedida', {'nome_unidade': 'Litro'});
       await db.insert('UnidadesMedida', {'nome_unidade': 'Unidade'});
     },
-    version: 1,
+    version: 2,
   );
 }
-
+    
 // Funções para manipulação de dados na tabela Usuarios
 Future<void> inserirUsuario(Database db, Map<String, dynamic> usuario) async {
   try {

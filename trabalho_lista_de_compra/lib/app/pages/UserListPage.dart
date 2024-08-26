@@ -12,7 +12,7 @@ class _UserListPageState extends State<UserListPage> {
 
   // Função para obter os registros da tabela de usuários
   Future<void> getDevices() async {
-    final db = await initializeDatabase();
+    final db = await ListaDatabase();
 
     // Consulta todos os registros da tabela 'Usuarios'
     final List<Map<String, dynamic>> users = await db.query('Usuarios');
@@ -24,7 +24,7 @@ class _UserListPageState extends State<UserListPage> {
 
   // Função para limpar os registros da tabela
   Future<void> limparRegistros() async {
-    final db = await initializeDatabase();
+    final db = await ListaDatabase();
     // Exclui todos os registros da tabela 'Usuarios'
     await db.delete('Usuarios');
 

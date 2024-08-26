@@ -33,7 +33,6 @@ class _TelaListasState extends State<TelaListas> {
       backgroundColor: Color(0xFFE3A776),
       appBar: AppBar(
         backgroundColor: Color(0xFFE3A776),
-
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
           onPressed: () {
@@ -51,7 +50,6 @@ class _TelaListasState extends State<TelaListas> {
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -140,21 +138,32 @@ class _TelaListasState extends State<TelaListas> {
                         ),
                         Row(
                           children: [
-                            IconButton(
+                           IconButton(
                               icon: Icon(Icons.visibility, color: Colors.blue),
-                              onPressed: () => _controller
-                                  .visualizarLista(lista['id_lista']),
+                              onPressed: () {
+                                final id = lista['id_lista']; 
+                                final nome = lista['nome_lista']; 
+
+                                _controller.visualizarLista(id, nome); // Passa ambos os argumentos
+                              },
                             ),
                             IconButton(
                               icon: Icon(Icons.edit, color: Colors.orange),
                               onPressed: () {
+                                final id = lista[
+                                    'id_lista']; 
+                                final nome = lista[
+                                    'nome_lista']; 
+
                                 if (lista['status_lista'] == 'Em Andamento') {
-                                  _controller.editarLista(lista['id_lista']);
+                                  _controller.editarLista(
+                                      id, nome); // Passa ambos os argumentos
                                 } else {
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     SnackBar(
-                                        content: Text(
-                                            'Esta lista está finalizada e não pode ser editada.')),
+                                      content: Text(
+                                          'Esta lista está finalizada e não pode ser editada.'),
+                                    ),
                                   );
                                 }
                               },
@@ -162,11 +171,13 @@ class _TelaListasState extends State<TelaListas> {
                             IconButton(
                               icon: Icon(Icons.delete, color: Colors.red),
                               onPressed: () async {
-                                bool sucesso = await _controller.deletarLista(lista['id_lista']);
+                                bool sucesso = await _controller
+                                    .deletarLista(lista['id_lista']);
                                 if (sucesso) {
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     SnackBar(
-                                      content: Text('Lista deletada com sucesso.'),
+                                      content:
+                                          Text('Lista deletada com sucesso.'),
                                     ),
                                   );
                                 } else {

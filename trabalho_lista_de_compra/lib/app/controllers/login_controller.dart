@@ -19,7 +19,7 @@ class LoginController {
       return false;
     }
 
-    final db = await initializeDatabase();
+    final db = await ListaDatabase();
 
     // Verificar se o usuário existe
     final resultado = await db.query(
