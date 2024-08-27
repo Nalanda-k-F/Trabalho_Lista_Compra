@@ -8,6 +8,7 @@ class TelaListas extends StatefulWidget {
 
 class _TelaListasState extends State<TelaListas> {
   late ListaPrincipalController _controller;
+  String _searchQuery = '';
 
   @override
   void initState() {
@@ -18,12 +19,14 @@ class _TelaListasState extends State<TelaListas> {
     });
   }
 
+  void _searchList() {
+    setState(() {
+      _controller.searchList(_searchQuery);
+    });
+  }
+
   @override
   void dispose() {
-    _controller.searchController.removeListener(() {
-      setState(() {});
-    });
-    _controller.searchController.dispose();
     super.dispose();
   }
 
@@ -48,11 +51,6 @@ class _TelaListasState extends State<TelaListas> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             TextField(
-              controller: _controller.searchController,
-              style: TextStyle(
-                color: Color.fromARGB(255, 1, 1, 1),
-                fontWeight: FontWeight.bold, // Adiciona o texto em negrito
-              ),
               decoration: InputDecoration(
                 hintStyle: TextStyle(
                   color: Color.fromARGB(255, 0, 0, 0),
@@ -60,20 +58,29 @@ class _TelaListasState extends State<TelaListas> {
                   fontSize: 15.0,
                 ),
                 filled: true,
-                fillColor: Colors.white24,
-                hintText: "Buscar por nome",
+                fillColor: Color.fromARGB(255, 255, 253, 253),
+                hintText: 'Nome da Lista',
                 border: OutlineInputBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(90.0)),
+                  borderRadius: BorderRadius.all(Radius.circular(20.0)),
                   borderSide: BorderSide(
-                    color: Colors.white24,
+                    color: Color.fromRGBO(255, 255, 255, 0.239),
                     width: 0.5,
                   ),
                 ),
-                prefixIcon: Icon(
-                  Icons.search,
-                  color: Color.fromARGB(255, 6, 6, 6),
+                suffixIcon: IconButton(
+                  icon: Icon(Icons.search),
+                  onPressed: _searchList,
                 ),
               ),
+              style: TextStyle(
+                color: Color.fromARGB(255, 1, 1, 1),
+                fontWeight: FontWeight.bold,
+              ),
+              onChanged: (value) {
+                setState(() {
+                  _searchQuery = value;
+                });
+              },
             ),
             SizedBox(height: 16),
             ElevatedButton.icon(
@@ -83,16 +90,15 @@ class _TelaListasState extends State<TelaListas> {
               style: ElevatedButton.styleFrom(
                 primary: Color(0xFF0A7744), // Cor de fundo verde
                 onPrimary: Colors.white, // Cor do texto branco
-                padding: EdgeInsets.symmetric(
-                    horizontal: 25, vertical: 15), // Tamanho do botão
+                padding: EdgeInsets.symmetric(horizontal: 25, vertical: 15), // Tamanho do botão
               ),
             ),
             SizedBox(height: 16),
             Expanded(
               child: ListView.builder(
-                itemCount: _controller.filteredListas.length,
+                itemCount: _controller.listas.length,
                 itemBuilder: (context, index) {
-                  final lista = _controller.filteredListas[index];
+                  final lista = _controller.listas[index];
                   return Container(
                     margin: EdgeInsets.only(bottom: 8),
                     padding: EdgeInsets.all(12),
@@ -122,8 +128,7 @@ class _TelaListasState extends State<TelaListas> {
                               Text(
                                 'Status: ${lista['status_lista']}',
                                 style: TextStyle(
-                                  color: _controller
-                                      .getStatusColor(lista['status_lista']),
+                                  color: _controller.getStatusColor(lista['status_lista']),
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
@@ -132,31 +137,25 @@ class _TelaListasState extends State<TelaListas> {
                         ),
                         Row(
                           children: [
-                           IconButton(
+                            IconButton(
                               icon: Icon(Icons.visibility, color: Colors.blue),
                               onPressed: () {
-                                final id = lista['id_lista']; 
-                                final nome = lista['nome_lista']; 
-
-                                _controller.visualizarLista(id, nome); // Passa ambos os argumentos
+                                final id = lista['id_lista'];
+                                final nome = lista['nome_lista'];
+                                _controller.visualizarLista(id, nome);
                               },
                             ),
                             IconButton(
                               icon: Icon(Icons.edit, color: Colors.orange),
                               onPressed: () {
-                                final id = lista[
-                                    'id_lista']; 
-                                final nome = lista[
-                                    'nome_lista']; 
-
+                                final id = lista['id_lista'];
+                                final nome = lista['nome_lista'];
                                 if (lista['status_lista'] == 'Em Andamento') {
-                                  _controller.editarLista(
-                                      id, nome); // Passa ambos os argumentos
+                                  _controller.editarLista(id, nome);
                                 } else {
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     SnackBar(
-                                      content: Text(
-                                          'Esta lista está finalizada e não pode ser editada.'),
+                                      content: Text('Esta lista está finalizada e não pode ser editada.'),
                                     ),
                                   );
                                 }
@@ -165,15 +164,11 @@ class _TelaListasState extends State<TelaListas> {
                             IconButton(
                               icon: Icon(Icons.delete, color: Colors.red),
                               onPressed: () async {
-                                bool sucesso = await _controller
-                                    .deletarLista(lista['id_lista']);
-                                     Navigator.pushNamed(context, '/telaPrincipal');
+                                bool sucesso = await _controller.deletarLista(lista['id_lista']);
                                 if (sucesso) {
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     SnackBar(
-                                      content:
-                                          Text('Lista deletada com sucesso.'),
-                                          
+                                      content: Text('Lista deletada com sucesso.'),
                                     ),
                                   );
                                 } else {
@@ -183,6 +178,8 @@ class _TelaListasState extends State<TelaListas> {
                                     ),
                                   );
                                 }
+                                // Atualiza a tela após a deleção
+                                setState(() {});
                               },
                             ),
                           ],

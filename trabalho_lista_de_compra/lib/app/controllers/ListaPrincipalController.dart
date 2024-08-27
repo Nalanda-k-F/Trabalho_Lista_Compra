@@ -6,12 +6,8 @@ class ListaPrincipalController extends ChangeNotifier {
   final BuildContext context;
   Database? _db;
   List<Map<String, dynamic>> _listas = [];
-  List<Map<String, dynamic>> _filteredListas = [];
-  final TextEditingController searchController = TextEditingController();
 
-  ListaPrincipalController(this.context) {
-    searchController.addListener(_filterListas);
-  }
+  ListaPrincipalController(this.context);
 
   Future<void> initDatabase() async {
     try {
@@ -26,19 +22,31 @@ class ListaPrincipalController extends ChangeNotifier {
     try {
       final listas = await _db?.query('Listas');
       _listas = listas ?? [];
-      _filterListas(); // Atualiza a lista filtrada
+      notifyListeners(); // Notifica que a lista foi atualizada
     } catch (e) {
       print("Erro ao buscar listas: $e");
     }
   }
 
-  void _filterListas() {
-    final query = searchController.text.toLowerCase();
-    _filteredListas = _listas.where((lista) {
-      return lista['nome_lista'].toLowerCase().contains(query);
-    }).toList();
-    notifyListeners();
+  Future<void> searchList(String query) async {
+    try {
+      if (query.isEmpty) {
+        await _fetchListas(); // Se a busca estiver vazia, recarregue todas as listas
+      } else {
+        final listas = await _db?.query(
+          'Listas',
+          where: 'nome_lista LIKE ?',
+          whereArgs: ['%$query%'],
+        );
+        _listas = listas ?? [];
+      }
+      notifyListeners(); // Notifica que a lista foi atualizada
+    } catch (e) {
+      print("Erro ao buscar listas: $e");
+    }
   }
+
+  List<Map<String, dynamic>> get listas => _listas;
 
   void novaLista() {
     Navigator.pushNamed(context, '/telaCadastro').then((_) {
@@ -111,15 +119,6 @@ class ListaPrincipalController extends ChangeNotifier {
     }
   }
 
-  List<Map<String, dynamic>> get filteredListas => _filteredListas;
-
-  @override
-  void dispose() {
-    searchController.removeListener(_filterListas);
-    searchController.dispose();
-    super.dispose();
-  }
- 
   void showLogoutDialog(BuildContext context) {
     showDialog(
       context: context,
@@ -137,8 +136,8 @@ class ListaPrincipalController extends ChangeNotifier {
             TextButton(
               child: Text('Sair'),
               onPressed: () {
-                // Lógica de logout
-                Navigator.of(context).pushReplacementNamed('/home'); // Exemplo de navegação
+                Navigator.of(context).pop();
+                Navigator.pushReplacementNamed(context, '/login');
               },
             ),
           ],
@@ -146,5 +145,4 @@ class ListaPrincipalController extends ChangeNotifier {
       },
     );
   }
-
 }

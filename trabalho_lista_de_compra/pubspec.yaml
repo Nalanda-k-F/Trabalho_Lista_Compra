@@ -33,6 +33,7 @@ dependencies:
   sqflite: any #para o Banco de Dados
   path: any # Versão mais recente disponivel 
   intl: any
+  provider: any
 
   
   # The following adds the Cupertino Icons font to your application.
