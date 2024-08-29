@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import '../controllers/cadastro_lista_controller.dart';
 import 'package:intl/intl.dart';
-import '../widgets/custom_button.dart'; // Importe o arquivo onde você definiu o CustomButton
+import '../widgets/custom_button.dart';
 
 class TelaCadastro extends StatefulWidget {
+  final int userId;
+
+  TelaCadastro({required this.userId});
   @override
   _TelaCadastroState createState() => _TelaCadastroState();
 }
@@ -26,8 +29,12 @@ class _TelaCadastroState extends State<TelaCadastro> {
         title: Text('Voltar'),
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
-           onPressed: () {
-            Navigator.pushNamed(context, '/telaPrincipal');
+          onPressed: () {
+            Navigator.pushNamed(
+              context,
+              '/telaPrincipal',
+              arguments: {'userId': widget.userId},
+            );
           },
         ),
       ),
@@ -249,7 +256,8 @@ class _TelaCadastroState extends State<TelaCadastro> {
                       Expanded(
                         child: CustomButton(
                           text: 'SALVAR',
-                          onPressed: () => _controller.salvarLista(context),
+                          onPressed: () =>
+                              _controller.salvarLista(context, widget.userId),
                         ),
                       ),
                       SizedBox(width: 10),
@@ -262,7 +270,7 @@ class _TelaCadastroState extends State<TelaCadastro> {
                         ),
                       ),
                     ],
-                  ),
+                  )
                 ],
               ),
             ),

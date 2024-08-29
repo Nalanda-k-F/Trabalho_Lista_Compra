@@ -25,12 +25,16 @@ class CadastroListaController {
 
     try {
       final db = await _getDatabase();
+
+      // Recupera o ID da unidade de medida
+      final unidadeId = await _getUnidadeId(unidadeSelecionada!);
+
       final idItem = await db.insert(
         'Itens',
         {
           'nome_item': itemController.text,
           'quantidade_item': double.parse(quantidadeController.text),
-          'id_unidade_medida_fk': unidades.indexOf(unidadeSelecionada!) + 1,
+          'id_unidade_medida_fk': unidadeId,
         },
       );
 
@@ -79,16 +83,29 @@ class CadastroListaController {
     }
   }
 
-  void salvarLista(BuildContext context) async {
+  Future<void> salvarLista(BuildContext context, int userId) async {
+    if (nomeLista.trim().isEmpty) {
+      _showSnackBar(context, 'O nome da lista é obrigatório', Colors.red);
+      return;
+    }
+
     try {
       final db = await _getDatabase();
 
+      // Verifique se usuarioId é válido
+      if (userId <= 0) {
+        _showSnackBar(context, 'ID de usuário inválido', Colors.red);
+        return;
+      }
+
+      // Insere a lista
       final idLista = await db.insert('Listas', {
         'nome_lista': nomeLista,
         'data_criacao_lista': dataInicio?.toIso8601String(),
-        // Adicione outras colunas conforme necessário
+        'id_usu_fk': userId,
       });
 
+      // Insere os itens na tabela ListaItens
       for (var item in itens) {
         await db.insert('ListaItens', {
           'quantidade_lista_item': double.parse(item['quantidade'].toString()),
@@ -114,6 +131,13 @@ class CadastroListaController {
     updateUI();
   }
 
+  Future<int> _getUnidadeId(String unidade) async {
+    final db = await _getDatabase();
+    final result = await db.query('UnidadesMedida',
+        where: 'nome_unidade = ?', whereArgs: [unidade]);
+    return result.isNotEmpty ? result.first['id_unidade_medida'] as int : 0;
+  }
+
   void _showSnackBar(BuildContext context, String message, Color color) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
@@ -122,5 +146,5 @@ class CadastroListaController {
         duration: Duration(seconds: 2),
       ),
     );
-  }  //
+  }
 }

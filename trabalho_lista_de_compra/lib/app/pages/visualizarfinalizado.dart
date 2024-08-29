@@ -1,22 +1,21 @@
 import 'package:flutter/material.dart';
-import '../controllers/visualizarController.dart';
+import '../controllers/visualizarFinalizadoController.dart';
 import '../../database/bd.dart';
-import '../widgets/custom_button.dart';
 
-class Visualizar extends StatefulWidget {
+class VisualizarFinalizado extends StatefulWidget {
   final int idLista;
   final String nomeLista;
   final int userId;
 
-  Visualizar(
+  VisualizarFinalizado(
       {required this.idLista, required this.nomeLista, required this.userId});
 
   @override
-  _VisualizarState createState() => _VisualizarState();
+  _VisualizarFinalizadoState createState() => _VisualizarFinalizadoState();
 }
 
-class _VisualizarState extends State<Visualizar> {
-  VisualizarListaController? _controller;
+class _VisualizarFinalizadoState extends State<VisualizarFinalizado> {
+  VisualizarFinalizadoController? _controller;
   late Future<void> _fetchData;
 
   @override
@@ -28,9 +27,8 @@ class _VisualizarState extends State<Visualizar> {
   Future<void> _initController() async {
     try {
       final db = await ListaDatabase();
-      _controller = VisualizarListaController(db, widget.idLista);
+      _controller = VisualizarFinalizadoController(db, widget.idLista);
       await _controller!.fetchItens();
-    
       setState(() {});
     } catch (e) {
       print("Erro ao inicializar controlador: $e");
@@ -47,7 +45,7 @@ class _VisualizarState extends State<Visualizar> {
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
           onPressed: () {
-            Navigator.pushNamed(
+           Navigator.pushNamed(
               context,
               '/telaPrincipal',
               arguments: {'userId': widget.userId},
@@ -70,6 +68,9 @@ class _VisualizarState extends State<Visualizar> {
             if (_controller!.itens.isEmpty) {
               return Center(child: Text('Nenhum item encontrado.'));
             }
+
+            final dataCriacao = _controller!.dataCriacaoFormatted;
+            final precoTotal = _controller!.precoTotal;
 
             return SingleChildScrollView(
               child: Padding(
@@ -97,6 +98,14 @@ class _VisualizarState extends State<Visualizar> {
                         ),
                       ],
                     ),
+                    SizedBox(height: 20),
+                    Text(
+                      'Data de Criação: ${dataCriacao ?? 'Não disponível'}',
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: Color(0xFF003366),
+                      ),
+                    ),
                     SizedBox(height: 16),
                     ListView.builder(
                       shrinkWrap: true,
@@ -104,7 +113,6 @@ class _VisualizarState extends State<Visualizar> {
                       itemCount: _controller!.itens.length,
                       itemBuilder: (context, index) {
                         final item = _controller!.itens[index];
-                        final bool isChecked = item['comprado'] == 1;
 
                         return Container(
                           margin: EdgeInsets.only(bottom: 8),
@@ -121,17 +129,6 @@ class _VisualizarState extends State<Visualizar> {
                           ),
                           child: ListTile(
                             contentPadding: EdgeInsets.all(16.0),
-                            leading: Checkbox(
-                              value: isChecked,
-                              onChanged: (bool? value) async {
-                                if (value != null) {
-                                  await _controller!.marcarComoComprado(
-                                      item['id_lista_item'], value ? 1 : 0);
-                                  await _controller!.fetchItens();
-                                  setState(() {});
-                                }
-                              },
-                            ),
                             title: Text(
                               item['nome_item'],
                               style: TextStyle(
@@ -162,40 +159,13 @@ class _VisualizarState extends State<Visualizar> {
                       },
                     ),
                     SizedBox(height: 16),
-                    TextFormField(
+                    Text(
+                      'Valor Total: R\$ ${precoTotal?.toStringAsFixed(2) ?? '0.00'}',
                       style: TextStyle(
-                        color: Colors.black,
+                        fontSize: 18,
                         fontWeight: FontWeight.bold,
+                        color: Colors.black,
                       ),
-                      controller: _controller!.precoController,
-                      decoration: InputDecoration(
-                        hintStyle: TextStyle(
-                          color: Colors.black,
-                          fontFamily: "WorkSansLight",
-                          fontSize: 15.0,
-                        ),
-                        filled: true,
-                        fillColor: Colors.white,
-                        hintText: 'Valor Total',
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(20.0)),
-                          borderSide: BorderSide(
-                            color: Colors.white.withOpacity(0.5),
-                            width: 0.5,
-                          ),
-                        ),
-                      ),
-                      keyboardType:
-                          TextInputType.numberWithOptions(decimal: true),
-                    ),
-                    SizedBox(height: 16),
-                    CustomButton(
-                      text: 'Finalizar Compra',
-                      onPressed: () async {
-                        if (_controller != null) {
-                          await _controller!.finalizarCompra(context);
-                        }
-                      },
                     ),
                   ],
                 ),

@@ -49,7 +49,6 @@ class _CadastrarState extends State<Cadastrar> {
         confirmacaoSenha: confirmacaoSenha,
         limparCampos: _limparCampos,
       );
-      
     }
   }
 
@@ -88,14 +87,14 @@ class _CadastrarState extends State<Cadastrar> {
                   children: [
                     TextFormField(
                       style: TextStyle(
-                        color:  Color.fromARGB(255, 1, 1, 1),
+                        color: Color.fromARGB(255, 1, 1, 1),
                         fontWeight:
                             FontWeight.bold, // Adiciona o texto em negrito
                       ),
                       controller: _nomeController,
                       decoration: InputDecoration(
                         hintStyle: TextStyle(
-                            color:  Color.fromARGB(255, 0, 0, 0),
+                            color: Color.fromARGB(255, 0, 0, 0),
                             fontFamily: "WorkSansLight",
                             fontSize: 15.0),
                         filled: true,
@@ -116,8 +115,7 @@ class _CadastrarState extends State<Cadastrar> {
                     TextFormField(
                       style: TextStyle(
                         color: const Color.fromARGB(255, 1, 1, 1),
-                        fontWeight:
-                            FontWeight.bold,
+                        fontWeight: FontWeight.bold,
                       ),
                       controller: _emailController,
                       decoration: InputDecoration(
@@ -209,7 +207,7 @@ class _CadastrarState extends State<Cadastrar> {
                       text: 'CADASTRAR',
                       onPressed: _cadastrarUsuario,
                     ),
-                  SizedBox(height: 16.0),
+                    SizedBox(height: 16.0),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -247,7 +245,7 @@ class _CadastrarState extends State<Cadastrar> {
                         ),
                         GestureDetector(
                           onTap: () {
-                            Navigator.pushReplacementNamed(context, '/home'); 
+                            Navigator.pushReplacementNamed(context, '/home');
                           },
                           child: Text(
                             'Voltar',

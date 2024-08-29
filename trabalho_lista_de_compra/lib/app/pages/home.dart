@@ -8,7 +8,9 @@ class HomePage extends StatelessWidget {
     return Scaffold(
       body: Stack(
         children: [
-          BackgroundImage(imagePath: 'img/imagem2.jpg'), // Usando o widget de imagem de fundo
+          BackgroundImage(
+              imagePath:
+                  'img/imagem2.jpg'), // Usando o widget de imagem de fundo
           Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,

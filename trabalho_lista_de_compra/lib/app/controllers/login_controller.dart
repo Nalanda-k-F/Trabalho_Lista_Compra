@@ -14,12 +14,12 @@ class LoginController {
     // Verificar se todos os campos estão preenchidos
     if (email.isEmpty || senha.isEmpty) {
       erroLogin = 'Todos os campos devem ser preenchidos.';
-      limparCampos(); // Limpar campos ao exibir erro
       _mostrarMensagem(context, erroLogin!, Colors.red);
+      limparCampos(); // Limpar campos ao exibir erro
       return false;
     }
 
-    final db = await ListaDatabase();
+    final db = await ListaDatabase(); // Inicializa o banco de dados
 
     // Verificar se o usuário existe
     final resultado = await db.query(
@@ -30,15 +30,26 @@ class LoginController {
 
     if (resultado.isEmpty) {
       erroLogin = 'E-mail ou senha inválidos.';
-      limparCampos(); // Limpar campos ao exibir erro
       _mostrarMensagem(context, erroLogin!, Colors.red);
+      limparCampos(); // Limpar campos ao exibir erro
       return false;
     }
+
+    // Obter o userId do usuário logado
+    final userId = resultado.first['id_usu'] as int;
 
     // Login bem-sucedido
     _mostrarMensagem(context, 'Login realizado com sucesso.', Colors.green);
     erroLogin = null; // Limpe a mensagem de erro
     limparCampos(); // Limpar campos após sucesso
+
+    // Navegar para TelaListas passando o userId
+    Navigator.pushNamed(
+      context,
+      '/telaPrincipal',
+      arguments: {'userId': userId},
+    );
+
     return true;
   }
 

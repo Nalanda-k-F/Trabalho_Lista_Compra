@@ -6,25 +6,31 @@ class ListaPrincipalController extends ChangeNotifier {
   final BuildContext context;
   Database? _db;
   List<Map<String, dynamic>> _listas = [];
+  final int _userId;
 
-  ListaPrincipalController(this.context);
+  ListaPrincipalController(this.context, this._userId);
 
   Future<void> initDatabase() async {
     try {
       _db = await ListaDatabase();
       await _fetchListas();
     } catch (e) {
-      print("Erro ao inicializar o banco de dados: $e");
+      _mostrarMensagem('Erro ao inicializar o banco de dados: $e', Colors.red);
     }
   }
+  
 
   Future<void> _fetchListas() async {
     try {
-      final listas = await _db?.query('Listas');
+      final listas = await _db?.query(
+        'Listas',
+        where: 'id_usu_fk = ?',
+        whereArgs: [_userId],
+      );
       _listas = listas ?? [];
       notifyListeners(); // Notifica que a lista foi atualizada
     } catch (e) {
-      print("Erro ao buscar listas: $e");
+      _mostrarMensagem('Erro ao buscar listas: $e', Colors.red);
     }
   }
 
@@ -35,85 +41,100 @@ class ListaPrincipalController extends ChangeNotifier {
       } else {
         final listas = await _db?.query(
           'Listas',
-          where: 'nome_lista LIKE ?',
-          whereArgs: ['%$query%'],
+          where: 'id_usu_fk = ? AND nome_lista LIKE ?',
+          whereArgs: [_userId, '%$query%'],
         );
         _listas = listas ?? [];
       }
       notifyListeners(); // Notifica que a lista foi atualizada
     } catch (e) {
-      print("Erro ao buscar listas: $e");
+      _mostrarMensagem('Erro ao buscar listas: $e', Colors.red);
     }
   }
 
   List<Map<String, dynamic>> get listas => _listas;
 
   void novaLista() {
-    Navigator.pushNamed(context, '/telaCadastro').then((_) {
-      _fetchListas();
-    });
+  Navigator.pushNamed(
+    context,
+    '/telaCadastro',
+    arguments: {'userId': _userId}, 
+  ).then((_) {
+    _fetchListas();
+  });
+}
+
+
+  Future<void> visualizarLista(int id, String nome,int userId) async {
+    try {
+      final listas = await _db?.query('Listas', where: 'id_lista = ?', whereArgs: [id]);
+
+      if (listas != null && listas.isNotEmpty) {
+        final lista = listas.first;
+        final status = lista['status_lista'];
+        final dataCriacao = lista['data_criacao_lista'];
+
+        if (status == 'Finalizado') {
+          Navigator.pushNamed(
+            context,
+            '/visualizarFinalizado',
+            arguments: {
+              'idLista': id,
+              'nomeLista': nome,
+              'dataCriacao': dataCriacao,
+              'id_usu_fk': userId,
+            },
+          );
+        } else {
+          Navigator.pushNamed(
+            context,
+            '/visualizar',
+            arguments: {
+              'idLista': id,
+              'nomeLista': nome,
+              'id_usu_fk': userId,
+            },
+          );
+        }
+      }
+    } catch (e) {
+      _mostrarMensagem('Erro ao visualizar lista: $e', Colors.red);
+    }
   }
 
-  void visualizarLista(int id, String nome) {
+  Future<void> editarLista(int id, String nome, int userId) async {
     Navigator.pushNamed(
       context,
-      '/visualizar',
+      '/editar',
       arguments: {
         'idLista': id,
         'nomeLista': nome,
+        'id_usu_fk': userId,
       },
     ).then((_) {
       _fetchListas();
     });
   }
 
-  Future<void> editarLista(int id, String nome) async {
+Future<bool> deletarLista(int id) async {
     try {
-      final listas = await _db?.query('Listas', where: 'id_lista = ?', whereArgs: [id]);
-      if (listas != null && listas.isNotEmpty) {
-        final lista = listas.first;
-        final status = lista['status_lista'];
-
-        if (status != 'Finalizado') {
-          Navigator.pushNamed(
-            context,
-            '/editar',
-            arguments: {'id': id, 'nome': nome},
-          ).then((_) {
-            _fetchListas();
-          });
-        } else {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Esta lista está finalizada e não pode ser editada.')),
-          );
-        }
-      }
-    } catch (e) {
-      print("Erro ao editar lista: $e");
-    }
-  }
-
-  Future<bool> deletarLista(int id) async {
-    try {
-      if (_db != null) {
-        await _db!.delete('ListaItens', where: 'id_lista_fk = ?', whereArgs: [id]);
-        await _db!.delete('Listas', where: 'id_lista = ?', whereArgs: [id]);
-        await _fetchListas();
-        return true;
-      }
-      return false;
+      final result = await _db?.delete('Listas', where: 'id_lista = ?', whereArgs: [id]);
+      return result != 0; // Retorna true se a deleção foi bem-sucedida
     } catch (e) {
       print("Erro ao deletar lista: $e");
       return false;
     }
   }
 
+
   Color getStatusColor(String status) {
     switch (status) {
       case 'Em Andamento':
-        return Colors.red;
+        return Colors.orange;
       case 'Finalizado':
         return Colors.green;
+      case 'Cancelado':
+        return Colors.red;
       default:
         return Colors.black;
     }
@@ -122,27 +143,41 @@ class ListaPrincipalController extends ChangeNotifier {
   void showLogoutDialog(BuildContext context) {
     showDialog(
       context: context,
-      builder: (BuildContext context) {
+      builder: (context) {
         return AlertDialog(
           title: Text('Sair'),
-          content: Text('Você tem certeza que deseja sair?'),
-          actions: <Widget>[
+          content: Text('Você realmente deseja sair?'),
+          actions: [
             TextButton(
-              child: Text('Cancelar'),
               onPressed: () {
                 Navigator.of(context).pop();
               },
+              child: Text('Cancelar'),
             ),
             TextButton(
-              child: Text('Sair'),
               onPressed: () {
                 Navigator.of(context).pop();
                 Navigator.pushReplacementNamed(context, '/login');
               },
+              child: Text('Sair'),
             ),
           ],
         );
       },
+    );
+  }
+
+  void _mostrarMensagem(String mensagem, Color corFundo) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          mensagem,
+          style: TextStyle(color: Colors.white), // Texto em branco
+        ),
+        backgroundColor: corFundo, // Cor de fundo configurada
+        behavior: SnackBarBehavior.floating,
+        margin: EdgeInsets.all(16.0),
+      ),
     );
   }
 }

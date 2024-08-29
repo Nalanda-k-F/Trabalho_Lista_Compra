@@ -6,8 +6,10 @@ import '../widgets/custom_button.dart';
 class Editar extends StatefulWidget {
   final int idLista;
   final String nomeLista;
+  final int userId;
 
-  Editar({required this.idLista, required this.nomeLista});
+  Editar(
+      {required this.idLista, required this.nomeLista, required this.userId});
 
   @override
   _EditarState createState() => _EditarState();
@@ -54,8 +56,12 @@ class _EditarState extends State<Editar> {
         title: Text('Voltar'),
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
-           onPressed: () {
-             Navigator.pushNamed(context, '/telaPrincipal');
+          onPressed: () {
+            Navigator.pushNamed(
+              context,
+              '/telaPrincipal',
+              arguments: {'userId': widget.userId},
+            );
           },
         ),
       ),

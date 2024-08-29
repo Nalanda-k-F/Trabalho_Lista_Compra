@@ -7,12 +7,13 @@ import 'app/pages/telaCadastro.dart';
 import 'app/pages/telaPrincipal.dart';
 import 'app/pages/editar.dart';
 import 'app/pages/visualizar.dart';
-import '../../database/bd.dart'; 
+import 'app/pages/visualizarfinalizado.dart';
+import '../../database/bd.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  // await deleteAppDatabase(); // 
-  await ListaDatabase(); 
+  // await deleteAppDatabase(); //
+  await ListaDatabase();
   runApp(TrabalhoFinal());
 }
 
@@ -35,22 +36,46 @@ class TrabalhoFinal extends StatelessWidget {
         '/cadastrar': (context) => Cadastrar(),
         '/login': (context) => Login(),
         '/userListPage': (context) => UserListPage(),
-        '/telaCadastro': (context) => TelaCadastro(),
-        '/telaPrincipal': (context) => TelaListas(),
+
         // Define a rota para Editar passando o argumento
+        '/telaCadastro': (context) {
+          final args = ModalRoute.of(context)?.settings.arguments
+              as Map<String, dynamic>?;
+          if (args != null) {
+            final userId = args['userId'] as int;
+            return TelaCadastro(userId: userId);
+          }
+          return Scaffold(
+            body: Center(child: Text('Dados não encontrados!')),
+          );
+        },
+        '/telaPrincipal': (context) {
+          final args = ModalRoute.of(context)?.settings.arguments
+              as Map<String, dynamic>?;
+          if (args != null) {
+            final userId = args['userId'] as int;
+            return TelaListas(userId: userId);
+          }
+          return Scaffold(
+            body: Center(child: Text('Dados não encontrados!')),
+          );
+        },
+        //
         '/editar': (context) {
           final args = ModalRoute.of(context)?.settings.arguments
               as Map<String, dynamic>?;
           if (args != null) {
             return Editar(
-              idLista: args['id'] as int,
-              nomeLista: args['nome'] as String,
+              idLista: args['idLista'],
+              nomeLista: args['nomeLista'],
+              userId: args['id_usu_fk'],
             );
           }
           return Scaffold(
             body: Center(child: Text('Dados não encontrados!')),
           );
         },
+
         // Define a rota para Visualizar passando o argumento
         '/visualizar': (context) {
           final args = ModalRoute.of(context)?.settings.arguments
@@ -59,6 +84,23 @@ class TrabalhoFinal extends StatelessWidget {
             return Visualizar(
               idLista: args['idLista'] as int,
               nomeLista: args['nomeLista'] as String,
+              userId: args['id_usu_fk'] as int,
+            );
+          }
+          return Scaffold(
+            body: Center(child: Text('Dados não encontrados!')),
+          );
+        },
+
+        ///
+        '/visualizarFinalizado': (context) {
+          final args = ModalRoute.of(context)?.settings.arguments
+              as Map<String, dynamic>?;
+          if (args != null) {
+            return VisualizarFinalizado(
+              idLista: args['idLista'] as int,
+              nomeLista: args['nomeLista'] as String,
+              userId: args['id_usu_fk'] as int,
             );
           }
           return Scaffold(
@@ -66,8 +108,7 @@ class TrabalhoFinal extends StatelessWidget {
           );
         },
       },
-      initialRoute: '/telaPrincipal',
+      initialRoute: '/home',
     );
   }
 }
-

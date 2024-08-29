@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import '../controllers/ListaPrincipalController.dart';
 
 class TelaListas extends StatefulWidget {
+  final int userId;
+  TelaListas({required this.userId});
+
   @override
   _TelaListasState createState() => _TelaListasState();
 }
@@ -13,7 +16,7 @@ class _TelaListasState extends State<TelaListas> {
   @override
   void initState() {
     super.initState();
-    _controller = ListaPrincipalController(context);
+    _controller = ListaPrincipalController(context, widget.userId);
     _controller.initDatabase().then((_) {
       setState(() {}); // Atualiza a tela após as listas serem carregadas
     });
@@ -36,14 +39,12 @@ class _TelaListasState extends State<TelaListas> {
       backgroundColor: Color(0xFFE3A776),
       appBar: AppBar(
         backgroundColor: Color(0xFFE3A776),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.logout),
-            onPressed: () {
-              _controller.showLogoutDialog(context);
-            },
-          ),
-        ],
+        leading: IconButton(
+          icon: Icon(Icons.exit_to_app),
+          onPressed: () {
+            _controller.showLogoutDialog(context);
+          },
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -90,7 +91,8 @@ class _TelaListasState extends State<TelaListas> {
               style: ElevatedButton.styleFrom(
                 primary: Color(0xFF0A7744), // Cor de fundo verde
                 onPrimary: Colors.white, // Cor do texto branco
-                padding: EdgeInsets.symmetric(horizontal: 25, vertical: 15), // Tamanho do botão
+                padding: EdgeInsets.symmetric(
+                    horizontal: 25, vertical: 15), // Tamanho do botão
               ),
             ),
             SizedBox(height: 16),
@@ -128,7 +130,8 @@ class _TelaListasState extends State<TelaListas> {
                               Text(
                                 'Status: ${lista['status_lista']}',
                                 style: TextStyle(
-                                  color: _controller.getStatusColor(lista['status_lista']),
+                                  color: _controller
+                                      .getStatusColor(lista['status_lista']),
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
@@ -142,7 +145,8 @@ class _TelaListasState extends State<TelaListas> {
                               onPressed: () {
                                 final id = lista['id_lista'];
                                 final nome = lista['nome_lista'];
-                                _controller.visualizarLista(id, nome);
+                                final userId = lista['id_usu_fk'];
+                                _controller.visualizarLista(id, nome, userId);
                               },
                             ),
                             IconButton(
@@ -150,12 +154,14 @@ class _TelaListasState extends State<TelaListas> {
                               onPressed: () {
                                 final id = lista['id_lista'];
                                 final nome = lista['nome_lista'];
+                                final userId = lista['id_usu_fk'];
                                 if (lista['status_lista'] == 'Em Andamento') {
-                                  _controller.editarLista(id, nome);
+                                  _controller.editarLista(id, nome, userId);
                                 } else {
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     SnackBar(
-                                      content: Text('Esta lista está finalizada e não pode ser editada.'),
+                                      content: Text(
+                                          'Esta lista está finalizada e não pode ser editada.'),
                                     ),
                                   );
                                 }
@@ -164,22 +170,32 @@ class _TelaListasState extends State<TelaListas> {
                             IconButton(
                               icon: Icon(Icons.delete, color: Colors.red),
                               onPressed: () async {
-                                bool sucesso = await _controller.deletarLista(lista['id_lista']);
+                                bool sucesso = await _controller
+                                    .deletarLista(lista['id_lista']);
                                 if (sucesso) {
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     SnackBar(
-                                      content: Text('Lista deletada com sucesso.'),
+                                      backgroundColor: Color.fromARGB(255, 3, 129, 15),
+                                      content:
+                                          Text('Lista deletada com sucesso.'),
                                     ),
                                   );
                                 } else {
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     SnackBar(
+                                       backgroundColor: Color.fromARGB(255, 111, 0, 0),
                                       content: Text('Erro ao deletar a lista.'),
                                     ),
                                   );
                                 }
                                 // Atualiza a tela após a deleção
-                                setState(() {});
+                                setState(() {
+                                  Navigator.pushNamed(
+                                    context,
+                                    '/telaPrincipal',
+                                    arguments: {'userId': widget.userId},
+                                  );
+                                });
                               },
                             ),
                           ],

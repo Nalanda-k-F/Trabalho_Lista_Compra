@@ -35,10 +35,10 @@ class _LoginState extends State<Login> {
         limparCampos: _limparCampos,
       );
 
-      if (sucesso) {
-        // Redirecionar para a próxima tela após login bem-sucedido
-        Navigator.pushReplacementNamed(context, '/telaPrincipal'); // Ajuste para a rota desejada
-      }
+      // if (sucesso) {
+      //   // Redirecionar para a próxima tela após login bem-sucedido
+      //   Navigator.pushReplacementNamed(context, '/telaPrincipal'); // Ajuste para a rota desejada
+      // }
     }
   }
 
