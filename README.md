@@ -15,6 +15,6 @@ LINK DO DESIGNER DO FIGMA: https://www.figma.com/design/QbPFIl6NFSIpEjXKjaRMW8/L
 
 **path:** Usada para trabalhar com caminhos de arquivos de maneira segura e independente de plataforma.
 
-**intl:** Para internacionalização e formatação de números, datas, etc.
+**intl:** Para internacionalização e formatação de números, datas.
 
 **provider:** Usada para gerenciamento de estado no Flutter, um dos pacotes mais populares para essa finalidade.
