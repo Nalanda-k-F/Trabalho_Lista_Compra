@@ -11,3 +11,10 @@ LINK DO DESIGNER DO FIGMA: https://www.figma.com/design/QbPFIl6NFSIpEjXKjaRMW8/L
 
 
 *3) Seleção das Tecnologias:*
+**sqflite:** Dependência para integrar SQLite ao seu aplicativo Flutter.
+
+**path:** Usada para trabalhar com caminhos de arquivos de maneira segura e independente de plataforma.
+
+**intl:** Para internacionalização e formatação de números, datas, etc.
+
+**provider:** Usada para gerenciamento de estado no Flutter, um dos pacotes mais populares para essa finalidade.
