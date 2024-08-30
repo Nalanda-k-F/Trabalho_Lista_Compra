@@ -11,6 +11,7 @@ LINK DO DESIGNER DO FIGMA: https://www.figma.com/design/QbPFIl6NFSIpEjXKjaRMW8/L
 
 
 *3) Seleção das Tecnologias:*
+
 **sqflite:** Dependência para integrar SQLite ao seu aplicativo Flutter.
 
 **path:** Usada para trabalhar com caminhos de arquivos de maneira segura e independente de plataforma.
