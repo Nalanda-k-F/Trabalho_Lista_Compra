@@ -1,14 +1,18 @@
 
-*1) Definição do Tema:*
+**Nome**
+*Jackeline Neiva dos Santos*
 
+*Nalanda Kippert Flegler*
 
+*1) Definição do Tema:* Gerenciamento Pessoal
+
+**Título do Projeto:** Lista de Compras
 
 *2) Desenvolvimento do Design da Interface:*
 
 LINK DO PROTÓTIPO        : https://www.figma.com/proto/QbPFIl6NFSIpEjXKjaRMW8/Lista-De-Compras?node-id=0-1&t=esIgNLVBRD9VijSU-1
 
 LINK DO DESIGNER DO FIGMA: https://www.figma.com/design/QbPFIl6NFSIpEjXKjaRMW8/Lista-De-Compras?node-id=0-1&t=esIgNLVBRD9VijSU-1
-
 
 *3) Seleção das Tecnologias:*
 
